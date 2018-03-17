@@ -97,7 +97,7 @@ function iftttMaker(event: string, iftttToken: string, req: IFTTTMakerReq): Http
 	};
 }
 
-function envOrDie(key: string): string {
+function envOrException(key: string): string {
 	const val = process.env[key];
 
 	if (val) {
@@ -141,11 +141,11 @@ export function processEvent(event: RecordRoot, config: HandlerConfig): Result {
 }
 
 export function handler(event: RecordRoot, context: undefined, callback: LambdaCallback) {
-	const handerConfig: HandlerConfig = {
-		iftttToken: envOrDie('IFTTT_TOKEN'),
-	};
-
 	try {
+		const handerConfig: HandlerConfig = {
+			iftttToken: envOrException('IFTTT_TOKEN'),
+		};
+
 		const res = processEvent(event, handerConfig);
 
 		makeAllHttpRequests(res.HttpRequestsToMake).then(() => {
